@@ -1,0 +1,79 @@
+            /* 输入n,则矩阵为n*n大小,设矩阵a[n][n]
+         * 需要转的圈数c为 math.Ceil(n/2)
+         * 每一圈需要经过的数组下标分为4段
+         * 第一段：开始下标为 a[c-1][c-1] 结束下标为：a[c-1][n - c]
+         * 第二段：开始下标为 a[c][n-c] 结束下标为：a[n - c][n - c]
+         * 第三段：开始下标为 a[n-c][c-1] 结束下标为：a[n - c][n - c - 1]
+         * 第四段：开始下标为 a[c][c-1] 结束下标为：a[n - c - 1][c - 1]
+         * 
+         */
+            int[,] CreateMatrix(int n)
+            {
+                if (n < 0)
+                {
+                    return null;
+                }
+                var a = new int[n, n];
+                if (n == 1)
+                {
+                    a[1, 1] = 1;
+                    return a;
+                }
+
+
+
+                int c = Mathf.CeilToInt(n / 2.0f);
+                int counter = 1;
+                for (int k = 1; k <= c; k++)
+                {
+                    //第一段
+                    int i = k - 1;
+                    int j;
+                    int start = k - 1;
+                    int end = n - k;
+                    if (start <= end)
+                    {
+                        for (j = start; j <= end; j++)
+                        {
+                            a[i, j] = counter++;
+                        }
+                    }
+
+                    //第二段
+                    j = n - k;
+                    start = k;
+                    end = n - k;
+                    if (start <= end)
+                    {
+                        for (i = start; i <= end; i++)
+                        {
+                            a[i, j] = counter++;
+                        }
+                    }
+
+                    //第三段
+                    i = n - k;
+                    start = k - 1;
+                    end = n - k - 1;
+                    if (start <= end)
+                    {
+                        for (j = end; j >= start; j--)
+                        {
+                            a[i, j] = counter++;
+                        }
+                    }
+
+                    //第四段
+                    j = k - 1;
+                    start = k;
+                    end = n - k - 1;
+                    if (start <= end)
+                    {
+                        for (i = start; i <= end; i++)
+                        {
+                            a[i, j] = counter++;
+                        }
+                    }
+                }
+                return a;
+            }
