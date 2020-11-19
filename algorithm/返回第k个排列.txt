@@ -1,0 +1,70 @@
+            /*
+            * 将问题分解成根据序号K,依次从高位开始确定数值大小
+            * 设当前输入位n
+            * 设f(k, i), k为当前的序号， i为第i位（重高位开始）
+            * f 则为确定当前位值 result = k / (n - i)!, 确定下一次的输入k = k / (n - i)!, i = i + 1
+            * 然后通过result找到对应的数值realResult = g(map), 然后把realResult放入map
+            */
+
+            int[] GetPermutation(int n, int K)
+            {
+                var resultArray = new int[n];
+                if (n < 1 || n > 9)
+                {
+                    return null;
+                }
+                if (K < 1 || K > factorial(9))
+                {
+                    return null;
+                }
+                Dictionary<int, bool> map = new Dictionary<int, bool>();
+                Func<int, int> getRealMap = (x) =>
+                {
+                    int count = 0;
+                    for (int j = 1;j <= n; j++)
+                    {
+                        if (!map.ContainsKey(j))
+                        {
+                            count++;
+                        }
+                        if (count == x)
+                        {
+                            return j;
+                        }
+                    }
+                    return 0;
+                };
+
+                int k = K;
+                int i = 1;
+                while(i < n)
+                {
+                    var divisor = factorial(n - i);
+                    int quotient = k / divisor;
+                    k = k % divisor;
+                    int result = quotient;
+                    result += k > 0 ? 1 : 0;
+                    k = k == 0 ? divisor : k;
+                    int realResult = getRealMap(result);
+                    map.Add(realResult, true);
+                    resultArray[i - 1] = realResult;
+                    i++;
+                }
+                resultArray[n - 1] = getRealMap(1);
+                return resultArray;
+            }
+
+            int factorial(int a)
+            {
+                if (a < 0)
+                {
+                    return 0;
+                }
+
+                if (a == 1)
+                {
+                    return 1;
+                }
+
+                return a * (a - 1);
+            }
