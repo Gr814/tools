@@ -1,0 +1,32 @@
+  /* 首先从数组最后一位a[i]加一，有进位则向前进位，如果 i - 1小于零则特殊处理
+             * 新建一个数组，将进位放第一位，然后将数组a依次放入新数组
+             */
+            int[] IntegerPlus1(int[] a)
+            {
+                if (a == null)
+                {
+                    return null;
+                }
+                int length = a.Length;
+                int carry = 1;
+                int index = length - 1;
+                while(carry != 0)
+                {
+                    if (index < 0)
+                    {
+                        int[] result = new int[length + 1];
+                        result[0] = 1;
+                        for(int i = 1; i < length; i++)
+                        {
+                            result[i] = a[i - 1];
+                        }
+                        return result;
+                    }
+                    a[index] += 1;
+                    bool isCarry = a[index] == 10;
+                    carry = isCarry ? 1 : 0;
+                    a[index] = isCarry ? 0 : a[index];
+                    index -= 1;
+                }
+                return a;
+            }
