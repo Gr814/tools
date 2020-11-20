@@ -1,0 +1,80 @@
+            /* 向右循环n次其实就是找到数第n + 1个节点，将第n节点断开并且将断开链表的尾部插入到链表开头
+             * 
+             */
+             public class Node
+            {
+                public int data;
+                public Node next;
+                public Node(int i, Node n)
+                {
+                    next = n;
+                    data = i;
+                }
+            }
+
+            public Node LoopList(Node node, int n)
+            {
+                if (node == null)
+                {
+                    return null;
+                }
+                if (n == 0)
+                {
+                    return node;
+                }
+                Node lastNode = null;
+                Node head = node;
+                Node nPlus1 = FindBackNode(head, n + 1, ref lastNode);
+                if (nPlus1 == null)
+                {
+                    return null;
+                }
+                Node nNode = nPlus1.next;
+                if (nNode == null)
+                {
+                    return node;
+                }
+                nPlus1.next = null;
+                lastNode.next = head;
+                return nNode;
+            }
+
+            /* 设链表长度位 L, 倒数第N个节点
+             * 如果 N > L,则循环从尾部开始
+             * 查找倒数第N个节点，从头节点开始走L - N 步到达倒数第N个节点
+             * 设置一个工具链表toolMan,先让其走到第N个链表上（走N - 1步），然后和原链表一起走L-N步
+             */ 
+            private Node FindBackNode(Node headNode,int n, ref Node lastNode)
+            {
+                Debug.LogFormat("headNode.data : {0},  n : {1}", headNode.data, n);
+                if (headNode == null)
+                {
+                    return null;
+                }
+                Node toolMan = new Node(1, headNode);
+                Node nNode = toolMan;
+                int length = 0;
+                int step = n ;
+                while(length < step)
+                {
+                    Debug.LogFormat("length : {0}", length);
+                    nNode = nNode.next;
+                    length += 1;
+                    if (nNode == null)
+                    {
+                        length = length - 1;
+                        int clipPos = n % length;
+                        clipPos = clipPos == 0 ? length : clipPos;
+                        step = clipPos;
+                        length = 0;
+                        nNode = toolMan;
+                    }
+                }
+                while(nNode.next != null)
+                {
+                    nNode = nNode.next;
+                    headNode = headNode.next;
+                }
+                lastNode = nNode;
+                return headNode;
+            }
