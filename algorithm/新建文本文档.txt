@@ -1,0 +1,72 @@
+           /* 依次从字符串尾部合并，记录进位
+            */
+            string MergeBinaryString(string st, string st1)
+            {
+                if (st == null && st1 == null)
+                {
+                    return "";
+                }
+
+                if (st != null && st1 == null)
+                {
+                    return st;
+                }
+
+                if (st == null && st1 != null)
+                {
+                    return st1;
+                }
+                char char1 = '1';
+                char char0 = '0';
+                int mash = 1 << 3 - 2;
+                int length = st.Length;
+                int length1 = st1.Length;
+                int maxLength = Math.Max(length, length1);
+                int nextIndex = 0;
+                int carry = 0;
+                StringBuilder sb = new StringBuilder();
+                while (nextIndex < maxLength)
+                {
+                    var left = 0;
+                    var right = 0;
+                    if(nextIndex < length)
+                    {
+                        var bit = st[nextIndex];
+                        var isOne = bit == char1;
+                        var isZero = bit == char0;
+                        if (!isOne && !isZero)
+                        {
+                            return "";
+                        }
+                        left = isOne ? 1 : 0;
+                    }
+
+                    if (nextIndex < length1)
+                    {
+                        var bit = st1[nextIndex];
+                        var isOne = bit == char1;
+                        var isZero = bit == char0;
+                        if (!isOne && !isZero)
+                        {
+                            return "";
+                        }
+                        right = isOne ? 1 : 0;
+                        int value = left + right + carry;
+                        int lastBit = value & 1;
+                        sb.Append((lastBit == 1) ? char1 : char0);
+                        carry = value & mash;
+                    }
+                    nextIndex++;
+                }
+                if (carry != 0)
+                {
+                    sb.Append(char1);
+                }
+                var result = sb.ToString();
+                sb.Remove(0, sb.Length);
+                for (int i = result.Length - 1; i >= 0; i--)
+                {
+                    sb.Append(result[i]);
+                }
+                return sb.ToString();
+            }

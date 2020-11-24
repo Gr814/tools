@@ -1,0 +1,110 @@
+        /* 1.首先找到第一个适合的字母
+         * 2.然后扫描字母周围的字母，找到合适的（不在闭区间里面）下一个字母
+         * 3.当没有满足要求的节点时返回之前的节点，重复2步骤，若是父节点则直接重复1步骤
+         */
+        public bool IsValidWorld(char[][] matrix, string world)
+        {
+            if (matrix == null || world == null || world.Length < 1)
+            {
+                return false;
+            }
+            if (matrix.Length < 1)
+            {
+                return false;
+            }
+            char[] row0 = matrix[0];
+            if (row0.Length < 1)
+            {
+                return false;
+            }
+            int row = matrix.Length;
+            int column = row0.Length;
+            int[] closeMap = new int[row * column];
+            Stack<int> path = new Stack<int>();
+            Dictionary<int, bool> pathMap = new Dictionary<int, bool>();
+            for (int i = 0; i < row; i++)
+            {
+                for (int j = 0; j < column; j++)
+                {
+                    var element = matrix[i][j];
+                    if (element == world[0])
+                    {
+                        int currentPosI = i;
+                        int currentPosJ = j;
+                        int currentWordPos = 1;
+                        pathMap.Clear(); 
+                        do
+                        {
+                            if (currentWordPos >= world.Length)
+                            {
+                                return true;
+                            }
+                            int record = closeMap[currentPosI * row + currentPosJ];
+                            char currentValue = world[currentWordPos];
+                            var lastWorldPos = currentWordPos;
+                            var lastPosI = currentPosI;
+                            var lastPosJ = currentPosJ;
+                            if ((record & 1) == 0 && (currentPosJ - 1) >= 0)
+                            {
+                                char leftValue = matrix[currentPosI][currentPosJ - 1];
+                                if (leftValue == currentValue && !pathMap.ContainsKey(currentPosI * row + currentPosJ - 1))
+                                {
+                                    closeMap[currentPosI * row + currentPosJ] = record | 1;
+                                    currentPosJ = currentPosJ - 1;
+                                    currentWordPos += 1;
+                                }
+                            }
+                            if (lastWorldPos == currentWordPos && (record & 2) == 0 && (currentPosI - 1) >= 0)
+                            {
+                                char upValue = matrix[currentPosI - 1][currentPosJ];
+                                if (upValue == currentValue && !pathMap.ContainsKey((currentPosI - 1) * row + currentPosJ))
+                                {
+                                    closeMap[currentPosI * row + currentPosJ] = record | 2;
+                                    currentPosI = currentPosI - 1;
+                                    currentWordPos += 1;
+                                }
+                            }
+                            if (lastWorldPos == currentWordPos && (record & 4) == 0 && (currentPosJ + 1) < column)
+                            {
+                                char rightValue = matrix[currentPosI][currentPosJ + 1];
+                                if (rightValue == currentValue && !pathMap.ContainsKey(currentPosI * row + currentPosJ + 1))
+                                {
+                                    closeMap[currentPosI * row + currentPosJ] = record | 4;
+                                    currentPosJ = currentPosJ + 1;
+                                    currentWordPos += 1;
+                                }
+                            }
+                            if (lastWorldPos == currentWordPos && (record & 8) == 0 && (currentPosI + 1) < row)
+                            {
+                                char downValue = matrix[currentPosI + 1][currentPosJ];
+                                if (downValue == currentValue && !pathMap.ContainsKey((currentPosI + 1) * row + currentPosJ))
+                                {
+                                    closeMap[currentPosI * row + currentPosJ] = record | 8;
+                                    currentPosI = currentPosI + 1;
+                                    currentWordPos += 1;
+                                }
+                            }
+                            if (lastWorldPos == currentWordPos)
+                            {
+                                if (path.Count == 0)
+                                {
+                                    break;
+                                }
+                                pathMap.Remove(currentPosI * row + currentPosJ);
+                                var parent = path.Pop();
+                                currentPosI = parent / row;
+                                currentPosJ = parent % row;
+                                currentWordPos -= 1;
+                            }
+                            else
+                            {
+                                pathMap.Add(lastPosI * row + lastPosJ, true);
+                                path.Push(lastPosI * row + lastPosJ);
+                            }
+                        }
+                        while (true);
+                    }
+                }
+            }
+            return false;
+        }
