@@ -1,0 +1,38 @@
+        /* 设置一个移动下标pos, 遍历数组，将满足条件的放入该下标，下标加一
+         * 上述需要满足的条件是连序出现不超过两次
+         */
+        public int RemoveDuplicate(int[] array)
+        {
+            if (array == null)
+            {
+                throw new Exception("array is null");
+            }
+
+            int length = array.Length;
+            if (length <= 2)
+            {
+                return length;
+            }
+
+            int pos = 0;
+            int counter = 1;
+            for (int i = 1; i < length; i++)
+            {
+                if (array[i] == array[pos])
+                {
+                    counter += 1;
+                    if (counter == 2)
+                    {
+                        pos += 1;
+                        swap(array, pos, i);
+                    }
+                }
+                else
+                {
+                    counter = 1;
+                    pos += 1;
+                    swap(array, pos, i);
+                }
+            }
+            return pos + 1;
+        }
