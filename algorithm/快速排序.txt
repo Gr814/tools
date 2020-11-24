@@ -1,0 +1,48 @@
+        /* 随机从数组里面选则一个数字x，让它左边的值小于它，右边的大于它
+         * 将x放入数组最后，然后从左往右遍历数组，将小与x的依次放入左边
+         */
+        public int Permute(int[] array, int start, int end)
+        {
+            if (array == null)
+            {
+                 throw new Exception("array is null");
+            }
+            int length = array.Length;
+            if (array.Length <= 1 || start > end || length <= end)
+            {
+                throw new Exception("arg is exception");
+            }
+            int x = array[start];
+            swap(array, start, end);
+            int smallIndex = start;
+            for(int i = start; i < end; i++)
+            {
+                if (array[i] < x)
+                {
+                    swap(array, smallIndex, i);
+                    smallIndex++;
+                }
+            }
+            swap(array, smallIndex, end);
+            return smallIndex;
+        }
+
+        public void QuicklySort(int[] array, int start, int end)
+        {
+            if (array == null)
+            {
+                throw new Exception("array is null");
+            }
+            int length = array.Length;
+            if (array.Length <= 1 || length <= end)
+            {
+                throw new Exception("arg is exception");
+            }
+            if (start >= end)
+            {
+                return;
+            }
+            int smallIndex = Permute(array, start, end);
+            QuicklySort(array, start, smallIndex - 1);
+            QuicklySort(array, smallIndex + 1, end);
+        }
