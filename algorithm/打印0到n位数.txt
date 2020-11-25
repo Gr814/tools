@@ -1,0 +1,32 @@
+/* 一个数组的每一位都是用0 - 9 的字符排列组合
+         * 使用递归的方式实现0到N位数的字符大印
+         * f(n) = E（0 - 9）f(n - 1)
+         */
+        public void PrintN(int n)
+        {
+            if (n < 0)
+            {
+                throw new Exception("arg exception");
+            }
+            if (n == 0)
+            {
+                print("0");
+            }
+            StringBuilder sb = new StringBuilder();
+            printN(n, ref sb);
+        }
+        private void printN(int n, ref StringBuilder sb)
+        {
+            if (n == 0)
+            {
+                Debug.LogError(sb.ToString());
+                return;
+            }
+            n--;
+            for (int i = 0; i < 10; i++)
+            {
+                sb.Append(i);
+                printN(n, ref sb);
+                sb.Remove(sb.Length - 1, 1);
+            }
+        }
