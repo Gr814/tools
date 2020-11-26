@@ -1,0 +1,26 @@
+  public Node ReversalLinkList(Node head)
+        {
+            if (head == null || head.next == null)
+            {
+                return head;
+            }
+            Node newHead = null;
+            reversalLinkList(head, ref newHead);
+            return newHead;
+        }
+
+
+        private Node reversalLinkList(Node head, ref Node newHead)
+        {
+            if (head.next == null)
+            {
+                newHead = head;
+            }
+            else
+            {
+                Node next = reversalLinkList(head.next, ref newHead);
+                head.next = null;
+                next.next = head;
+            }
+            return head;
+        }
